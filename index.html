@@ -36,7 +36,9 @@
                 this.size = 2;
                 this.baseX = this.x;
                 this.baseY = this.y;
-                this.density = Math.random() * 30 + 1;
+                this.density = (Math.random() * 30) + 1;
+                this.velocityX = (Math.random() - 0.5) * 2;
+                this.velocityY = (Math.random() - 0.5) * 2;
             }
             draw() {
                 ctx.fillStyle = 'white';
@@ -46,17 +48,29 @@
                 ctx.fill();
             }
             update() {
+                this.x += this.velocityX;
+                this.y += this.velocityY;
+
+                // Bounce particles off the edges
+                if (this.x > canvas.width || this.x < 0) {
+                    this.velocityX = -this.velocityX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.velocityY = -this.velocityY;
+                }
+                
+                // Check mouse interaction
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
-                let forceDirectionX = dx / distance;
-                let forceDirectionY = dy / distance;
-                let maxDistance = mouse.radius;
-                let force = (maxDistance - distance) / maxDistance;
-                let directionX = forceDirectionX * force * this.density;
-                let directionY = forceDirectionY * force * this.density;
-
                 if (distance < mouse.radius) {
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let maxDistance = mouse.radius;
+                    let force = (maxDistance - distance) / maxDistance;
+                    let directionX = forceDirectionX * force * this.density;
+                    let directionY = forceDirectionY * force * this.density;
+
                     this.x -= directionX;
                     this.y -= directionY;
                 } else {
@@ -93,6 +107,18 @@
         function connect() {
             let opacityValue = 1;
             for (let a = 0; a < particlesArray.length; a++) {
+                let dx = mouse.x - particlesArray[a].x;
+                let dy = mouse.y - particlesArray[a].y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    ctx.strokeStyle = 'rgba(255,255,255,' + (1 - distance / mouse.radius) + ')';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(mouse.x, mouse.y);
+                    ctx.lineTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.stroke();
+                }
+
                 for (let b = a; b < particlesArray.length; b++) {
                     let dx = particlesArray[a].x - particlesArray[b].x;
                     let dy = particlesArray[a].y - particlesArray[b].y;
