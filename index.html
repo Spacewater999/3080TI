@@ -11,7 +11,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #1a1a1a;
+            background-color: #000000; /* Set background to black */
         }
         canvas {
             display: block;
@@ -41,7 +41,7 @@
                 this.velocityY = (Math.random() - 0.5) * 2;
             }
             draw() {
-                ctx.fillStyle = 'white';
+                ctx.fillStyle = 'blue'; // Set dots color to blue
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.closePath();
@@ -58,7 +58,7 @@
                 if (this.y > canvas.height || this.y < 0) {
                     this.velocityY = -this.velocityY;
                 }
-                
+
                 // Check mouse interaction
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
@@ -111,7 +111,7 @@
                 let dy = mouse.y - particlesArray[a].y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
                 if (distance < mouse.radius) {
-                    ctx.strokeStyle = 'rgba(255,255,255,' + (1 - distance / mouse.radius) + ')';
+                    ctx.strokeStyle = 'rgba(0,0,255,' + (1 - distance / mouse.radius) + ')'; // Set line color to blue
                     ctx.lineWidth = 1;
                     ctx.beginPath();
                     ctx.moveTo(mouse.x, mouse.y);
@@ -125,7 +125,7 @@
                     let distance = Math.sqrt(dx * dx + dy * dy);
                     if (distance < 30) {
                         opacityValue = 1 - (distance / 30);
-                        ctx.strokeStyle = 'rgba(255,255,255,' + opacityValue + ')';
+                        ctx.strokeStyle = 'rgba(0,0,255,' + opacityValue + ')'; // Set line color to blue
                         ctx.lineWidth = 1;
                         ctx.beginPath();
                         ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
