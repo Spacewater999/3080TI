@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connecting Dots Animation</title>
+    <title>Gooey Toxic Waste Effect</title>
     <style>
         body, html {
             margin: 0;
@@ -11,152 +11,45 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #000000; /* Set background to black */
+            background: #000000;
         }
-        canvas {
-            display: block;
+
+        .gooey {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: #000000;
+        }
+
+        .gooey path {
+            fill: #00ff00;
+        }
+
+        .drip {
+            animation: drip 5s infinite ease-in-out;
+        }
+
+        @keyframes drip {
+            0% {
+                transform: translateY(-100%);
+            }
+            50% {
+                transform: translateY(0%);
+            }
+            100% {
+                transform: translateY(-100%);
+            }
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const particlesArray = [];
-        const numberOfParticles = 100;
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = 2;
-                this.baseX = this.x;
-                this.baseY = this.y;
-                this.density = (Math.random() * 30) + 1;
-                this.velocityX = (Math.random() - 0.5) * 2;
-                this.velocityY = (Math.random() - 0.5) * 2;
-            }
-            draw() {
-                ctx.fillStyle = 'blue'; // Set dots color to blue
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.fill();
-            }
-            update() {
-                this.x += this.velocityX;
-                this.y += this.velocityY;
-
-                // Bounce particles off the edges
-                if (this.x > canvas.width || this.x < 0) {
-                    this.velocityX = -this.velocityX;
-                }
-                if (this.y > canvas.height || this.y < 0) {
-                    this.velocityY = -this.velocityY;
-                }
-
-                // Check mouse interaction
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < mouse.radius) {
-                    let forceDirectionX = dx / distance;
-                    let forceDirectionY = dy / distance;
-                    let maxDistance = mouse.radius;
-                    let force = (maxDistance - distance) / maxDistance;
-                    let directionX = forceDirectionX * force * this.density;
-                    let directionY = forceDirectionY * force * this.density;
-
-                    this.x -= directionX;
-                    this.y -= directionY;
-                } else {
-                    if (this.x !== this.baseX) {
-                        let dx = this.x - this.baseX;
-                        this.x -= dx / 10;
-                    }
-                    if (this.y !== this.baseY) {
-                        let dy = this.y - this.baseY;
-                        this.y -= dy / 10;
-                    }
-                }
-            }
-        }
-
-        const mouse = {
-            x: null,
-            y: null,
-            radius: 100
-        };
-
-        window.addEventListener('mousemove', (event) => {
-            mouse.x = event.x;
-            mouse.y = event.y;
-        });
-
-        function init() {
-            for (let i = 0; i < numberOfParticles; i++) {
-                particlesArray.push(new Particle());
-            }
-        }
-        init();
-
-        function connect() {
-            let opacityValue = 1;
-            for (let a = 0; a < particlesArray.length; a++) {
-                let dx = mouse.x - particlesArray[a].x;
-                let dy = mouse.y - particlesArray[a].y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < mouse.radius) {
-                    ctx.strokeStyle = 'rgba(0,0,255,' + (1 - distance / mouse.radius) + ')'; // Set line color to blue
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(mouse.x, mouse.y);
-                    ctx.lineTo(particlesArray[a].x, particlesArray[a].y);
-                    ctx.stroke();
-                }
-
-                for (let b = a; b < particlesArray.length; b++) {
-                    let dx = particlesArray[a].x - particlesArray[b].x;
-                    let dy = particlesArray[a].y - particlesArray[b].y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 30) {
-                        opacityValue = 1 - (distance / 30);
-                        ctx.strokeStyle = 'rgba(0,0,255,' + opacityValue + ')'; // Set line color to blue
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-            }
-            connect();
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            mouse.radius = ((canvas.height / 80) * (canvas.height / 80));
-        });
-
-        window.addEventListener('mouseout', () => {
-            mouse.x = undefined;
-            mouse.y = undefined;
-        });
-    </script>
+    <div class="gooey">
+        <svg viewBox="0 0 800 400" preserveAspectRatio="none" style="width: 100%; height: 100%;">
+            <path class="drip" d="M0,0 Q100,150 200,100 T400,200 T600,100 T800,200 V400 H0 Z" />
+        </svg>
+    </div>
 </body>
 </html>
